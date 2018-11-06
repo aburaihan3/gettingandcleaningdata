@@ -1,80 +1,37 @@
 # gettingandcleaningdata
 Peer Graded Assignment for Coursera Data Science Specialization Course Module 3
 
-  ## Set working directory
-  setwd("D:/Users/firaihan/Desktop/Data Science Assignments/Module 3 Assignment/UCI HAR Dataset")
-  
-  ## Load dplyr and stringr library
-  library(dplyr)
-  library(stringr)
-  
-  ## Read the supporting metadata
-  feature.Names <- read.table("features.txt")
-  activity.Names <- read.table("activity_labels.txt", header = FALSE)
-  
-  ## Read test data
-  subject.Test <- read.table("D:/Users/firaihan/Desktop/Data Science Assignments/Module 3 Assignment/UCI HAR Dataset/test/subject_test.txt", header = FALSE)
-  features.Test <- read.table("D:/Users/firaihan/Desktop/Data Science Assignments/Module 3 Assignment/UCI HAR Dataset/test/X_test.txt", header = FALSE)
-  activity.Test <- read.table("D:/Users/firaihan/Desktop/Data Science Assignments/Module 3 Assignment/UCI HAR Dataset/test/y_test.txt", header = FALSE)
-  
-  ## Read training data
-  subject.Train <- read.table("D:/Users/firaihan/Desktop/Data Science Assignments/Module 3 Assignment/UCI HAR Dataset/train/subject_train.txt", header = FALSE)
-  features.Train <- read.table("D:/Users/firaihan/Desktop/Data Science Assignments/Module 3 Assignment/UCI HAR Dataset/train/X_train.txt", header = FALSE)
-  activityT.rain <- read.table("D:/Users/firaihan/Desktop/Data Science Assignments/Module 3 Assignment/UCI HAR Dataset/train/y_train.txt", header = FALSE)
-  
-  ## Combine datasets
-  subject <- rbind(subject.Train, subject.Test)
-  features <- rbind(features.Train, features.Test)
-  activity <- rbind(activity.Train, activity.Test)
-  
-  ## Rename column names for features
-  colnames(features) <- t(featureNames[2])
-  
-  ## Rename column names for activity and subject
-  colnames(activity) <- "Activity"
-  colnames(subject) <- "Subject"
-  
-  ## Combine all data into another dataset
-  complete.Data <- cbind(features,activity,subject)
-  
-  ## Extract mean and standard deviation
-  col.means.STD <- grep(".*Mean.*|.*Std.*", names(complete.Data), ignore.case = TRUE)
-  
-  requiredColumns <- c(col.means.STD, 562, 563)
-  dim(compeleteData)
-  
-  extracted.Data <- complete.Data[,requiredColumns]
-  dim(extracted.Data)
-  
-  ## Change data type from numerical to character
-  extracted.Data$Activity <- as.character(extracted.Data$Activity)
-  for (i in 1:6){
-    extracted.Data$Activity[extracted.Data$Activity == i] <- as.character(activityNames[i,2])
-  }
-  
-  ## Factor the Activity variable
-  extracted.Data$Activity <- as.factor(extracted.Data$Activity)
-  
-  ## Replace the names of the variables
-  names(extracted.Data)<-gsub("Acc", "Accelerometer", names(extracted.Data))
-  names(extracted.Data)<-gsub("Gyro", "Gyroscope", names(extracted.Data))
-  names(extracted.Data)<-gsub("BodyBody", "Body", names(extracted.Data))
-  names(extracted.Data)<-gsub("Mag", "Magnitude", names(extracted.Data))
-  names(extracted.Data)<-gsub("^t", "Time", names(extracted.Data))
-  names(extracted.Data)<-gsub("^f", "Frequency", names(extracted.Data))
-  names(extracted.Data)<-gsub("tBody", "TimeBody", names(extracted.Data))
-  names(extracted.Data)<-gsub("-mean()", "Mean", names(extracted.Data), ignore.case = TRUE)
-  names(extracted.Data)<-gsub("-std()", "STD", names(extracted.Data), ignore.case = TRUE)
-  names(extracted.Data)<-gsub("-freq()", "Frequency", names(extracted.Data), ignore.case = TRUE)
-  names(extracted.Data)<-gsub("angle", "Angle", names(extracted.Data))
-  names(extracted.Data)<-gsub("gravity", "Gravity", names(extracted.Data))
-  
-  ## Set the subject as factor variable
-  extracted.Data$Subject <- as.factor(extracted.Data$Subject)
-  
-  ## Write into tidy data txt file
-  tidy.Data <- aggregate(. ~Subject + Activity, extracted.Data, mean)
-  tidy.Data <- tidyData[order(tidyData$Subject,tidyData$Activity),]
-  
-  ## Code is given in the assignment instruction
-  write.table(tidyData, file = "Tidy.txt", row.names = FALSE)
+One of the most exciting areas in all of data science right now is wearable computing - see for example this article . Companies like Fitbit, Nike, and Jawbone Up are racing to develop the most advanced algorithms to attract new users. The data linked to from the course website represent data collected from the accelerometers from the Samsung Galaxy S smartphone. A full description is available at the site where the data was obtained:
+
+http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+
+Here are the data for the project:
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+The repository created here has the following files:
+1. README.md - A file explaining the background of the analysis
+2. codebook.md - A codebook that describes the data and variables of the dataset
+3. Tidy.txt - The tidy data set in txt
+4. run_analysis.R - the R script that creates the dataset
+
+## Merging the data sets
+
+The train and test data were first merged together to create one complete data set.
+
+## Extracting the mean and standard deviation
+
+The measurements on the mean and standard deviation were extracted for each measurement, and then the measurements were averaged for each activity and subject. The final data set will have the average measurements for each activity and subject.
+
+## run_analysis.R
+
+The R script can be run to create the tidy data as described above.
+
+The R script will:
+1. Set the working directory where the source data is downloaded
+2. Read the supporting metadata
+3. Read the test and training data
+4. Combine data sets
+5. Rename columns
+6. Replace names of variables
+7. Create tidy data in txt format
